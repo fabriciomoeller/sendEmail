@@ -1,0 +1,36 @@
+package main
+
+import (
+	"log"
+	"net/smtp"
+)
+
+func main() {
+	// Defina os detalhes do servidor SMTP
+	smtpServer := "webmail.datainfo.inf.br"
+	smtpPort := "587"
+	from := "portalcompras@datainfo.inf.br"
+	password := "#Dtf$22"
+
+	// Defina o destinatário e a mensagem
+	recipient := "fabricio.moeller@datainfo.inf.br"
+	subject := "Assunto do e-mail"
+	body := "Corpo do e-mail"
+
+	// Autenticação com o servidor SMTP
+	auth := smtp.PlainAuth("", from, password, smtpServer)
+
+	// Construa a mensagem
+	msg := []byte("To: " + recipient + "\r\n" +
+		"Subject: " + subject + "\r\n" +
+		"\r\n" +
+		body + "\r\n")
+
+	// Tente enviar o e-mail
+	err := smtp.SendMail(smtpServer+":"+smtpPort, auth, from, []string{recipient}, msg)
+	if err != nil {
+		log.Fatalf("Falha ao enviar o e-mail: %v", err)
+	}
+
+	log.Println("E-mail enviado com sucesso!")
+}
