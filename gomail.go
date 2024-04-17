@@ -6,23 +6,18 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-func main() {
+func sendEmail(from string, to string, subject string, body string) (string, error) {
+	// Configuração do servidor SMTP e porta
 	// Configuração do servidor SMTP e porta
 	smtpHost := "sandbox.smtp.mailtrap.io"
 	smtpPort := 2525
 	username := "1b4847980c6087"
 	password := "2f4567c2b07c26"
 
-	from := "teste@datainfo.inf.br"
-
-	// Configuração do destinatário e mensagem
-	to := "fabricio.moeller@datainfo.inf.br"
-	subject := "Assunto do e-mail"
-	body := "Email enviado hoje"
-
 	// Configuração do objeto mensagem
 	message := gomail.NewMessage()
 	message.SetHeader("From", from)
+	// Configuração do destinatário e mensagem
 	message.SetHeader("To", to)
 	message.SetHeader("Subject", subject)
 	message.SetBody("text/plain", body)
@@ -33,8 +28,21 @@ func main() {
 
 	// Tenta enviar o e-mail
 	if err := d.DialAndSend(message); err != nil {
-		log.Fatalf("Falha ao enviar o e-mail: %v", err)
+		return "Falha ao enviar o e-mail: %v", err
+	} else {
+		return "E-mail enviado com sucesso!", nil
 	}
 
-	log.Println("E-mail enviado com sucesso!")
+}
+
+func main() {
+
+	sucesso, err := sendEmail("teste@datainfo.inf.br", "fabricio.moeller@datainfo.inf.br", "Assunto do e-mail", "Email enviado hoje")
+
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Println(sucesso)
+	}
+
 }
