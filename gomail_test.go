@@ -39,22 +39,26 @@ var tests = []struct {
 func TestSendEmail(t *testing.T) {
 
 	for _, test := range tests {
-		t.Run(test.subject, func(t *testing.T) {
-			t.Parallel()
-			sucesso, err := sendEmail(
-				test.from,
-				test.to,
-				test.subject,
-				test.body)
-			if err != nil {
-				if err.Error() != `gomail: could not send email 1: gomail: invalid address "": mail: no address` {
-					t.Fatal("Gerou o ERRO")
+		if (test.to == "" || test.from == "") && testing.Short() {
+			t.Skip("Ignorando teste")
+		} else {
+			t.Run(test.subject, func(t *testing.T) {
+				t.Parallel()
+				sucesso, err := sendEmail(
+					test.from,
+					test.to,
+					test.subject,
+					test.body)
+				if err != nil {
+					if err.Error() != `gomail: could not send email 1: gomail: invalid address "": mail: no address` {
+						t.Fatal("Gerou o ERRO")
+					} else {
+						t.Log(test.error, err)
+					}
 				} else {
-					t.Log(test.error, err)
+					t.Log(sucesso)
 				}
-			} else {
-				t.Log(sucesso)
-			}
-		})
+			})
+		}
 	}
 }
